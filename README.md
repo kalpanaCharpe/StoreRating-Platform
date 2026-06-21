@@ -1,6 +1,6 @@
-# StoreRating
+# StoreRating-Platform
 
-Full-stack web app where users can browse and rate registered stores. Built entirely in JavaScript.
+Full-stack web app where users can browse and rate registered stores.
 
 ## Tech Stack
 
@@ -35,7 +35,7 @@ storerating-js/
         │   ├── admin/       # Dashboard, Users, UserDetail, Stores
         │   ├── auth/        # Login, Register, ChangePassword
         │   ├── owner/       # Dashboard
-        │   └── user/        # Stores (with inline rating)
+        │   └── user/        # Stores 
         ├── store/           # Zustand auth store
         └── utils/           # validation schemas, helpers
 ```
@@ -88,68 +88,5 @@ npm run dev
 
 ---
 
-## User Roles & Access
 
-| Role | What they can do |
-|------|-----------------|
-| `ADMIN` | Dashboard stats, manage users (create/view/filter), manage stores (create/edit/delete) |
-| `USER` | Browse all stores, search, submit and update star ratings |
-| `STORE_OWNER` | View their own store info, see all customer ratings, view average score |
 
-All roles can change their password after logging in.
-
----
-
-## API Reference
-
-### Auth — `/api/auth`
-| Method | Path | Access | Description |
-|--------|------|--------|-------------|
-| POST | `/register` | Public | Register as a normal user |
-| POST | `/login` | Public | Login, returns JWT |
-| GET | `/me` | Any | Get current user info |
-| PATCH | `/change-password` | Any | Update password |
-
-### Users — `/api/users` (Admin only)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/` | List users — supports `?name=&email=&address=&role=&sortBy=&order=` |
-| GET | `/:id` | User detail (includes store + avg rating if STORE_OWNER) |
-| POST | `/` | Create any role user |
-
-### Stores — `/api/stores`
-| Method | Path | Access | Description |
-|--------|------|--------|-------------|
-| GET | `/` | Any auth | List stores — supports `?search=&sortBy=&order=` |
-| GET | `/owner/dashboard` | STORE_OWNER | Dashboard with ratings + avg |
-| GET | `/:id` | Any auth | Single store detail |
-| POST | `/` | Admin | Create store |
-| PATCH | `/:id` | Admin | Update store |
-| DELETE | `/:id` | Admin | Delete store + all ratings |
-
-### Ratings — `/api/ratings` (USER only)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/my-stores` | All stores with user's own rating attached |
-| GET | `/:storeId/my-rating` | User's rating for a specific store |
-| POST | `/:storeId` | Submit a new rating |
-| PATCH | `/:storeId` | Update an existing rating |
-
-### Dashboard — `/api/dashboard` (Admin only)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/` | Returns `{ totalUsers, totalStores, totalRatings }` |
-
----
-
-## Validation Rules
-
-| Field | Rule |
-|-------|------|
-| Name | Min 20 chars, max 60 chars |
-| Email | Standard email format |
-| Password | 8–16 chars, at least one uppercase letter, at least one special character |
-| Address | Max 400 chars |
-| Rating | Integer between 1 and 5 |
-
-Validation runs on both frontend (Zod + React Hook Form) and backend (Zod middleware).
